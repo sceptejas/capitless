@@ -1,8 +1,13 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.26;
 
-/// @title IStrategyPolicy
-/// @notice Interface for the CAPITLESS strategy permission and fee-policy store
+/// @title  IStrategyPolicy
+/// @author CAPITLESS
+/// @notice Permission and fee-policy registry for RFQ strategies.
+///         Each maker creates one or more strategies; each strategy controls
+///         which tokens, adapters, and pool keys are approved, the current
+///         dynamic fee pushed by the CRE workflow, and the policy version
+///         that orders must match at execution time.
 interface IStrategyPolicy {
     // -------------------------------------------------------------------------
     // Structs
