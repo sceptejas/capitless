@@ -1,0 +1,19 @@
+{
+  "name": "capitless-cre-workflow",
+  "version": "1.0.0",
+  "description": "Chainlink CRE workflow: fetches ETH/USDC price data, calculates dynamic fee, encodes PolicyReport, writes onchain via CLI simulation",
+  "type": "module",
+  "scripts": {
+    "build": "tsc --noEmit",
+    "start": "tsx src/index.ts",
+    "simulate": "tsx src/index.ts --simulate"
+  },
+  "dependencies": {
+    "viem": "2.21.19"
+  },
+  "devDependencies": {
+    "typescript": "5.3.3",
+    "tsx": "4.7.0",
+    "@types/node": "20.11.5"
+  }
+}

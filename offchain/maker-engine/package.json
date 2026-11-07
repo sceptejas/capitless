@@ -1,0 +1,19 @@
+{
+  "name": "capitless-maker-engine",
+  "version": "1.0.0",
+  "description": "CAPITLESS Maker pricing engine: fetches ETH/USDC data, computes quote, builds and EIP-712 signs an RFQOrder",
+  "type": "module",
+  "scripts": {
+    "build": "tsc --noEmit",
+    "quote": "tsx src/index.ts",
+    "quote:dry": "tsx src/index.ts --dry-run"
+  },
+  "dependencies": {
+    "viem": "2.21.19"
+  },
+  "devDependencies": {
+    "typescript": "5.3.3",
+    "tsx": "4.7.0",
+    "@types/node": "20.11.5"
+  }
+}
