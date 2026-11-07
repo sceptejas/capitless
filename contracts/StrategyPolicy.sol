@@ -27,6 +27,9 @@ contract StrategyPolicy is IStrategyPolicy, AccessControl {
     /// @notice Core configuration per strategy
     mapping(bytes32 strategyId => StrategyConfig) private _strategies;
 
+    /// @notice Ordered list of all registered strategy IDs (for enumeration)
+    bytes32[] private _strategyIds;
+
     /// @notice Per-strategy authorised signers (D-3: mapping model, not single field)
     mapping(bytes32 strategyId => mapping(address signer => bool)) private _authorisedSigners;
 
@@ -96,6 +99,7 @@ contract StrategyPolicy is IStrategyPolicy, AccessControl {
         });
 
         emit StrategyCreated(strategyId, msg.sender);
+        _strategyIds.push(strategyId);
     }
 
     /// @notice Activate or deactivate a strategy.
@@ -242,5 +246,15 @@ contract StrategyPolicy is IStrategyPolicy, AccessControl {
 
     function isPoolKeyApproved(bytes32 strategyId, bytes32 poolKeyHash) external view returns (bool) {
         return _approvedPoolKeys[strategyId][poolKeyHash];
+    }
+
+    /// @notice Returns all registered strategy IDs in creation order.
+    function getStrategyIds() external view returns (bytes32[] memory) {
+        return _strategyIds;
+    }
+
+    /// @notice Returns the number of registered strategies.
+    function strategyCount() external view returns (uint256) {
+        return _strategyIds.length;
     }
 }
