@@ -248,6 +248,16 @@ contract RFQExecutor is IRFQExecutor, EIP712, ReentrancyGuard, Ownable {
         emit NonceInvalidated(msg.sender, nonce);
     }
 
+    /// @notice Invalidate multiple nonces in one call — gas-efficient cancellation.
+    function invalidateNonceBatch(uint256[] calldata nonces) external {
+        for (uint256 i = 0; i < nonces.length; i++) {
+            uint256 wordPos = nonces[i] >> 8;
+            uint256 bit     = 1 << (nonces[i] & 0xff);
+            nonceBitmaps[msg.sender][wordPos] |= bit;
+            emit NonceInvalidated(msg.sender, nonces[i]);
+        }
+    }
+
     function isNonceUsed(address maker, uint256 nonce) external view returns (bool) {
         uint256 wordPos = nonce >> 8;
         uint256 bit     = 1 << (nonce & 0xff);
