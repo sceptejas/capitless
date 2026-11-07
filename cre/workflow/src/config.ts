@@ -11,7 +11,6 @@ export const CONFIG = {
   // Chainlink CRE chain identifier (used in workflow YAML)
   CRE_CHAIN_ID: "ethereum-testnet-sepolia",
 
-  // MockKeystoneForwarder on Ethereum Sepolia (simulation mode)
   MOCK_FORWARDER: "0x82300bd7c3958625581cc2F77bC6464dcEcDF3e5" as const,
 
   // Production KeystoneForwarder on Ethereum Sepolia (do not use during hackathon)

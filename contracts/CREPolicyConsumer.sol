@@ -19,7 +19,6 @@ interface IReceiver is IERC165 {
 ///
 /// Security model:
 ///   - Only the configured KeystoneForwarder can call onReport (msg.sender check).
-///   - For simulation: use MockKeystoneForwarder 0x82300bd7c3958625581cc2f77bc6464dcecdf3e5
 ///   - For production: use production forwarder 0xF8344CFd5c43616a4366C34E3EEE75af79a74482
 ///   - The forwarder is set at construction and cannot be address(0).
 ///   - policyVersion must strictly increase (replay protection).

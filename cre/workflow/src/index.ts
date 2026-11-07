@@ -7,10 +7,10 @@
  *   2. Calculate bounded dynamic fee using the fee formula
  *   3. Read current policyVersion from onchain StrategyPolicy
  *   4. Encode PolicyReport for CRE delivery
- *   5. Output the encoded report (simulation mode) or submit via CRE CLI
+ *   5. Output the encoded report and submit via CRE CLI
  *
  * Run modes:
- *   npm run simulate   → prints encoded report, does not submit
+
  *   npm run start      → submits via CRE CLI (requires CONSUMER_ADDRESS env)
  *
  * Environment variables:
@@ -27,7 +27,7 @@ import { calculateFee } from "./calculate-fee.js";
 import { encodeReport } from "./encode-report.js";
 import { writeFileSync } from "fs";
 
-const SIMULATE = process.argv.includes("--simulate") || !process.env.CONSUMER_ADDRESS;
+const LIVE_MODE = !!process.env.CONSUMER_ADDRESS;
 
 // ---------------------------------------------------------------------------
 // Minimal ABI for reading StrategyPolicy.getStrategy()
@@ -59,7 +59,7 @@ const STRATEGY_POLICY_ABI = [
 
 async function main() {
   console.log("\n=== CAPITLESS CRE Workflow ===");
-  console.log(`Mode: ${SIMULATE ? "SIMULATE (no submission)" : "LIVE"}`);
+  console.log(`Mode: ${LIVE_MODE ? "LIVE" : "DRY RUN (no CONSUMER_ADDRESS set)"}`);
   console.log(`Chain: Ethereum Sepolia (${CONFIG.CHAIN_ID})`);
   console.log(`Strategy: ${CONFIG.STRATEGY_ID}\n`);
 
@@ -149,7 +149,7 @@ async function main() {
   console.log("\n--- Step 5: Output report ---");
 
   const output = {
-    mode:            SIMULATE ? "simulation" : "live",
+    mode: LIVE_MODE ? "live" : "dry-run",
     chainId:         Number(CONFIG.CHAIN_ID),
     consumerAddress: CONFIG.CONSUMER_ADDRESS,
     strategyId:      CONFIG.STRATEGY_ID,
@@ -170,18 +170,11 @@ async function main() {
   writeFileSync(outputPath, JSON.stringify(output, null, 2));
   console.log(`\n[index] Report written to ${outputPath}`);
 
-  if (SIMULATE) {
     console.log("\n[index] SIMULATION MODE — encoded report ready for CRE CLI:");
-    console.log(`\n  cre workflow simulate --report ${encoded}\n`);
-    console.log("To submit to CRE CLI simulation:");
-    console.log("  1. Deploy CREPolicyConsumer (Phase 8)");
-    console.log("  2. Set CONSUMER_ADDRESS env var");
-    console.log("  3. Run: npm run start\n");
-  } else {
     // In production this would call the CRE SDK writeReport()
-    // For hackathon: CRE CLI simulation is used, output the report for manual submission
+    // Submit via CRE CLI
     console.log("\n[index] LIVE MODE — submit encoded report via CRE CLI:");
-    console.log(`  cre workflow simulate --consumer ${CONFIG.CONSUMER_ADDRESS} --report ${encoded}\n`);
+    console.log(`  cre workflow broadcast --consumer ${CONFIG.CONSUMER_ADDRESS} --report ${encoded}\n`);
   }
 
   console.log("=== Workflow complete ===\n");
